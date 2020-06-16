@@ -151,11 +151,11 @@ class Client:
 			threading.Thread(target=self.recvRtspReply).start()
 			# Update RTSP sequence number.
 			# ...
-			self.rtspSeq += 1
+			self.rtspSeq = 1
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "Setup %s RTSP 0.1 \nCSeq: %d \nTransport: RTP/UDP\nClient port: %d" % (
+			request = "C: SETUP %s RTSP/1.0 \nC: CSeq: %d \nC: Transport: RTP/UDP; client_port= %d" % (
 				self.fileName,
 				self.rtspSeq,
 				self.rtpPort
@@ -170,7 +170,7 @@ class Client:
 			self.rtspSeq += 1
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "Play %s RTSP 0.1 \nCSeq: %d \nSession ID: %d" % (
+			request = "C: PLAY %s RTSP/1.0 \nC: CSeq: %d \nC: Session ID: %d" % (
 				self.fileName,
 				self.rtspSeq,
 				self.sessionId
@@ -185,7 +185,7 @@ class Client:
 			self.rtspSeq += 1
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "Pause %s RTSP 0.1 \nCSeq: %d \nSession ID: %d" % (
+			request = "PAUSE %s RTSP/1.0 \nC: CSeq: %d \nC: Session ID: %d" % (
 				self.fileName,
 				self.rtspSeq,
 				self.sessionId
@@ -201,7 +201,7 @@ class Client:
 			self.rtspSeq += 1
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "Teardown %s RTSP 0.1 \nCSeq: %d \nSession ID: %d" % (
+			request = "TEARDOWN %s RTSP/1.0 \nC: CSeq: %d \nC: Session ID: %d" % (
 				self.fileName,
 				self.rtspSeq,
 				self.sessionId
@@ -283,8 +283,7 @@ class Client:
 		try:
 			# Bind the socket to the address using the RTP port given by the client user
 			# ...
-			self.state = self.READY
-			self.rtpSocket.bind(('', self.rtpPort))
+			self.rtpSocket.bind((self.serverAddr, self.rtpPort))
 		except:
 			tkMessageBox.showwarning('Unable to Bind', 'Unable to bind PORT=%d' %self.rtpPort)
 
